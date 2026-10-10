@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ camp.name }} · {{ app_name }}{% endblock %}
+{% block crumb %}Campanha #{{ camp.id }}{% endblock %}
+{% block body %}
+<section class="panel camp-header" data-cid="{{ camp.id }}" data-status="{{ camp.status }}">
+  <div class="camp-top">
+    <div><h1 class="camp-title">{{ camp.name }}</h1>
+      <div class="camp-meta"><span class="tag">{{ camp.provider }}</span>
+        {% if camp.is_flash %}<span class="tag tag-flash">Flash</span>{% endif %}
+        <span class="badge badge-{{ camp.status }}" id="camp-status">{{ camp.status }}</span>
+        {% if camp.schedule_at %}<span class="muted mono">agendada {{ camp.schedule_at }}</span>{% endif %}
+        <span class="muted mono">criada {{ camp.created_at | fmt_dt }}</span></div></div>
+    <div class="camp-actions">
+      <button class="btn btn-ghost btn-sm" data-action="pause">Pausar</button>
+      <button class="btn btn-ghost btn-sm" data-action="resume">Retomar</button>
+      <button class="btn btn-danger btn-sm" data-action="cancel">Cancelar</button>
+    </div>
+  </div>
+  <div class="progress"><div class="progress-bar" id="prog-bar" style="width: {{ (camp.sent + camp.failed) / camp.total * 100 if camp.total else 0 }}%"></div></div>
+  <div class="camp-stats">
+    <div class="cs"><span class="cs-label">Total</span><span class="cs-val mono" id="cs-total">{{ camp.total }}</span></div>
+    <div class="cs"><span class="cs-label">Enviados</span><span class="cs-val mono ok" id="cs-sent">{{ camp.sent }}</span></div>
+    <div class="cs"><span class="cs-label">Falhas</span><span class="cs-val mono err" id="cs-failed">{{ camp.failed }}</span></div>
+    <div class="cs"><span class="cs-label">Pendentes</span><span class="cs-val mono warn" id="cs-pending">{{ camp.pending }}</span></div>
+  </div>
+</section>
+<section class="panel"><div class="panel-head"><h2>Mensagens</h2>
+  <div class="filters">
+    <button class="filter active" data-filter="all">Todas</button>
+    <button class="filter" data-filter="sent">Enviadas</button>
+    <button class="filter" data-filter="pending">Pendentes</button>
+    <button class="filter" data-filter="failed">Falhas</button>
+  </div></div>
+<div class="table-wrap"><table class="table"><thead><tr>
+<th>#</th><th>Telefone</th><th>Status</th><th>Provider ID</th><th>Erro</th><th>Enviada em</th></tr></thead><tbody>
+{% for m in msgs %}
+<tr data-status="{{ m.status }}"><td class="mono">{{ m.id }}</td><td class="mono">{{ m.phone }}</td>
+<td><span class="badge badge-{{ m.status }}">{{ m.status }}</span></td>
+<td class="mono muted">{{ m.provider_msg_id or "—" }}</td>
+<td class="err small">{{ m.error or "" }}</td>
+<td class="mono muted">{{ m.sent_at | fmt_dt }}</td></tr>
+{% endfor %}</tbody></table></div></section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Provedores · {{ app_name }}{% endblock %}
+{% block crumb %}Provedores{% endblock %}
+{% block body %}
+<section class="panel">
+  <div class="panel-head"><h2>Provedores configurados</h2></div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Provider</th><th>Status</th><th>Flash</th><th>Bulk</th><th>Agenda</th><th>Status</th><th>Créditos</th><th>Voz</th><th>RCS</th></tr></thead>
+      <tbody>
+      {% for p in providers %}
+      <tr>
+        <td><span class="tag">{{ p.key }}</span></td>
+        <td>{% if p.ready %}<span class="badge badge-done">pronto</span>{% else %}<span class="badge badge-failed">sem chave</span>{% endif %}</td>
+        <td>{% if p.supports.flash %}<span class="ok">✓</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td>{% if p.supports.bulk %}<span class="ok">✓</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td>{% if p.supports.schedule %}<span class="ok">✓</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td>{% if p.supports.status %}<span class="ok">✓</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td>{% if p.supports.credits %}<span class="ok">✓</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td>{% if p.supports.voice %}<span class="ok">✓</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td>{% if p.supports.rcs %}<span class="ok">✓</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="panel">
+  <div class="panel-head"><h2>Como configurar</h2></div>
+  <div class="hint" style="margin:0">
+    <p><strong>Facilita Móvel:</strong> cadastre em <code>facilitamovel.com.br</code>. Pegue usuário e senha no painel. Preencha <code>FACILITA_USER</code> e <code>FACILITA_PASS</code>. Modo <code>json</code> ou <code>http</code>.</p>
+    <p><strong>SMSFire:</strong> cadastre em <code>smsfire.com.br</code>. Gere o token em Configurações → API Token. Cole em <code>SMSFIRE_TOKEN</code>.</p>
+    <p><strong>LigueLead:</strong> acesse <code>areadocliente.liguelead.app.br</code>. Vá em Integrações → API Token. Crie um App e copie o <code>API Token</code> e o <code>App ID</code>. Cole em <code>LIGUELEAD_API_TOKEN</code> e <code>LIGUELEAD_APP_ID</code>.</p>
+  </div>
+</section>
+{% endblock %}

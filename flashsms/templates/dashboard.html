@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · {{ app_name }}{% endblock %}
+{% block crumb %}Dashboard{% endblock %}
+{% block body %}
+<section class="stats-grid">
+  <div class="stat-card"><div class="stat-label">Campanhas</div><div class="stat-value">{{ totals.campaigns }}</div><div class="stat-foot">total criadas</div></div>
+  <div class="stat-card"><div class="stat-label">Mensagens</div><div class="stat-value">{{ totals.total }}</div><div class="stat-foot">em todas as campanhas</div></div>
+  <div class="stat-card stat-ok"><div class="stat-label">Enviadas</div><div class="stat-value">{{ totals.sent }}</div>
+    <div class="stat-foot">{% if totals.total %}{{ ((totals.sent / totals.total) * 100) | round(1) }}% do total{% else %}—{% endif %}</div></div>
+  <div class="stat-card stat-err"><div class="stat-label">Falhas</div><div class="stat-value">{{ totals.failed }}</div>
+    <div class="stat-foot">{% if totals.total %}{{ ((totals.failed / totals.total) * 100) | round(1) }}% do total{% else %}—{% endif %}</div></div>
+</section>
+<section class="panel"><div class="panel-head"><h2>Campanhas recentes</h2><span class="panel-sub">atualiza a cada 3s</span></div>
+<div class="table-wrap"><table class="table"><thead><tr>
+<th>#</th><th>Nome</th><th>Provider</th><th>Tipo</th><th class="num">Total</th><th class="num">Enviados</th><th class="num">Falhas</th><th>Status</th><th>Criada em</th><th></th>
+</tr></thead><tbody>
+{% for c in campaigns %}
+<tr><td class="mono">{{ c.id }}</td><td>{{ c.name }}</td>
+<td><span class="tag">{{ c.provider }}</span></td>
+<td>{% if c.is_flash %}<span class="tag tag-flash">Flash</span>{% else %}<span class="tag">SMS</span>{% endif %}</td>
+<td class="num mono">{{ c.total }}</td><td class="num mono ok">{{ c.sent }}</td>
+<td class="num mono {% if c.failed %}err{% endif %}">{{ c.failed }}</td>
+<td><span class="badge badge-{{ c.status }}">{{ c.status }}</span></td>
+<td class="mono muted">{{ c.created_at | fmt_dt }}</td>
+<td><a href="{{ url_for('campaign_detail', cid=c.id) }}" class="btn btn-ghost btn-sm">Abrir</a></td></tr>
+{% else %}<tr><td colspan="10" class="empty">Nenhuma campanha ainda.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

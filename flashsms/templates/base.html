@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ app_name }}{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head><body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">⚡</div>
+      <div class="brand-text"><span class="brand-name">FlashSMS</span><span class="brand-sub">painel de disparo</span></div>
+    </div>
+    <nav class="nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint=='dashboard' %}active{% endif %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12l9-9 9 9v8a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/></svg><span>Dashboard</span></a>
+      <a href="{{ url_for('new_campaign') }}" class="nav-item {% if request.endpoint=='new_campaign' %}active{% endif %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span>Nova campanha</span></a>
+      <a href="{{ url_for('providers_page') }}" class="nav-item {% if request.endpoint=='providers_page' %}active{% endif %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Provedores</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      {% for p in providers %}
+      <div class="prov-chip {% if p.ready %}ready{% else %}off{% endif %}">
+        <span class="dot"></span><span class="prov-name">{{ p.key }}</span>
+        <span class="prov-state">{{ "ok" if p.ready else "sem chave" }}</span>
+      </div>{% endfor %}
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><span class="crumb-muted">{{ app_name }}</span><span class="crumb-sep">/</span>
+        <span class="crumb-current">{% block crumb %}Painel{% endblock %}</span></div>
+      <div class="topbar-actions"><a href="{{ url_for('new_campaign') }}" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Nova campanha</a></div>
+    </header>
+    <div class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}<div class="toast toast-{{ cat }}">{{ msg }}</div>{% endfor %}
+      {% endwith %}
+      {% block body %}{% endblock %}
+    </div>
+  </main>
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Nova campanha · {{ app_name }}{% endblock %}
+{% block crumb %}Nova campanha{% endblock %}
+{% block body %}
+<form method="post" enctype="multipart/form-data" class="grid-two">
+  <section class="panel"><div class="panel-head"><h2>Mensagem</h2></div>
+    <div class="field"><label>Nome da campanha</label><input name="name" class="input" required placeholder="Ex: Promoção outubro"></div>
+    <div class="field"><label>Mensagem</label>
+      <textarea name="message" id="msg" class="input" rows="4" required placeholder="Texto da mensagem"></textarea>
+      <div class="charcount" id="charcount"><span class="cc-enc">GSM-7</span><span class="cc-val">0 / 160</span><span class="cc-parts">1 SMS</span></div></div>
+    <div class="field"><label>Provider</label><div class="radio-group">
+      {% for p in providers %}
+      <label class="radio {% if not p.ready %}radio-off{% endif %}">
+        <input type="radio" name="provider" value="{{ p.key }}" {% if p.key == active %}checked{% endif %} {% if not p.ready %}disabled{% endif %}>
+        <span class="radio-body"><span class="radio-title">{{ p.key }}</span>
+        <span class="radio-sub">{{ "pronto" if p.ready else "sem credencial" }}</span></span>
+      </label>{% endfor %}
+    </div></div>
+    <div class="field"><label>Agendar (opcional — ISO8601)</label>
+      <input name="schedule_at" class="input" placeholder="2026-10-20T14:00:00"></div>
+    <label class="switch"><input type="checkbox" name="is_flash" checked>
+      <span class="switch-track"><span class="switch-thumb"></span></span>
+      <span class="switch-label">Enviar como Flash SMS (Class 0)</span></label>
+  </section>
+  <section class="panel"><div class="panel-head"><h2>Lista de números</h2></div>
+    <label class="dropzone" id="dropzone">
+      <input type="file" name="csv" id="csv" accept=".csv,text/csv" required>
+      <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+      <div class="dz-title">Solte o CSV aqui</div>
+      <div class="dz-sub">ou clique · coluna <code>numero</code></div>
+      <div class="dz-file" id="dz-file"></div>
+    </label>
+    <div class="preview" id="preview" hidden>
+      <div class="preview-row"><span class="preview-label">Válidos</span><span class="preview-val ok" id="pv-valid">0</span></div>
+      <div class="preview-row"><span class="preview-label">Inválidos / duplicados</span><span class="preview-val err" id="pv-invalid">0</span></div>
+      <div class="preview-sample" id="pv-sample"></div>
+    </div>
+    <div class="hint">Aceita <code>11987654321</code>, <code>5511987654321</code> ou <code>+5511987654321</code>.</div>
+    <button class="btn btn-primary btn-block" type="submit">Criar e disparar
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </section>
+</form>
+{% endblock %}
